@@ -1,0 +1,70 @@
+{ pkgs, ... }:
+
+with pkgs; [
+  git
+  vim
+  tmux
+  wget
+  jq
+  neovim
+
+  alacritty
+  waybar
+  libnotify
+  mako
+  ly
+  firefox-bin
+  wofi
+  btop
+  rustup
+  libgcc
+  zig
+  bun
+  nodejs
+  unrar
+  zip
+  unzip
+  ripunzip
+  gcc
+  ripgrep
+  wl-clipboard
+  cliphist
+  iwgtk
+  nemo
+  brightnessctl
+  hyprlock
+  hyprpicker
+  xwayland-satellite
+  google-chrome
+  lyra-cursors
+  layan-gtk-theme
+  kora-icon-theme
+  grim
+  slurp
+  cloudflare-warp
+  zoxide
+  mpv
+  neofetch
+  swww
+  viewnior
+  dust
+  gnome.gvfs
+  aria2
+  usbutils
+  tmate
+  openssl
+  pkg-config
+  mold
+  clang
+  websocat
+  fast-cli
+  playerctl
+
+  code-cursor
+  telegram-desktop
+  discord
+  postman
+  obs-studio
+  obsidian
+  pavucontrol
+]
