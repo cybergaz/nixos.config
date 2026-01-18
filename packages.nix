@@ -2,30 +2,36 @@
 
 with pkgs; [
   git
-  vim
-  tmux
   wget
   jq
+  fd
+  killall
+  tmux
   neovim
 
   alacritty
   waybar
+  swayidle
   libnotify
   mako
   ly
   firefox-bin
   wofi
   btop
+  lazygit
   rustup
   libgcc
   zig
   bun
   nodejs
+  fzf
   unrar
   zip
   unzip
   ripunzip
+  bat
   gcc
+  gnumake
   ripgrep
   wl-clipboard
   cliphist
@@ -57,9 +63,15 @@ with pkgs; [
   mold
   clang
   websocat
-  fast-cli
+  # fast-cli
   playerctl
+  swayidle
+  ncdu
+  nvtopPackages.intel
 
+  awscli2
+  postgresql
+  go
   code-cursor
   telegram-desktop
   discord
@@ -67,4 +79,5 @@ with pkgs; [
   obs-studio
   obsidian
   pavucontrol
+  spotify
 ]

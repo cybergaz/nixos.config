@@ -11,15 +11,15 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
+  # graphics
   hardware.graphics = {
     enable = true;
-    extraPackages = with pkgs;
-      [
-        vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
-        # mesa
-        # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
-        # intel-media-sdk   # for older GPUs
-      ];
+    extraPackages = with pkgs; [
+      vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
+      mesa
+      # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
+      # intel-media-sdk   # for older GPUs
+    ];
   };
 
   # ------------------------------------------------------------------------
@@ -69,7 +69,10 @@
   };
 
   # Set your time zone.
+  time.hardwareClockInLocalTime = false;
   time.timeZone = "Asia/Kolkata";
+  services.timesyncd.enable = true;
+  # services.ntp.enable = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -98,7 +101,7 @@
   services.displayManager.ly.enable = true;
   services.displayManager.ly.settings = {
     # matrix || none
-    animation = "matrix";
+    animation = "none";
     # The character used to mask the password
     asterisk = ".";
     # Erase password input on failure
@@ -117,6 +120,8 @@
   programs.hyprland.enable = true;
   programs.niri.enable = true;
   programs.fish.enable = true;
+  programs.command-not-found.enable = true;
+  # programs.nix-index.enable = true;
   programs.nix-ld.enable = true;
   programs.nh = {
     enable = true;
@@ -124,6 +129,14 @@
     clean.extraArgs = "--keep-since 2d --keep 2";
     # flake = "/home/user/my-nixos-config"; # sets NH_OS_FLAKE variable for you
   };
+
+  # services.xserver = { enable = true; };
+  # programs.xwayland.enable = true;
+  # services.xserver.displayManager.startx.enable = true;
+  programs.steam = { enable = true; };
+  # programs.gamemode.enable = true;
+  # nixpkgs.config.allowUnfreePredicate = pkg:
+  #   builtins.elem (lib.getName pkg) [ "steam" "steam-unwrapped" ];
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -211,6 +224,16 @@
         HandleSuspendKey = "ignore";
         HandleSuspendKeyLongPress = "hibernate";
       };
+    };
+  };
+
+  # cloudflare warp cli
+  systemd.services.warp-svc = {
+    description = "Cloudflare WARP service";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.cloudflare-warp}/bin/warp-svc";
+      Restart = "always";
     };
   };
 

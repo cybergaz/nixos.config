@@ -52,9 +52,22 @@
   # basic configuration of git, please change to your own
   programs.git = {
     enable = true;
-    userName = "cybergaz";
-    userEmail = "kkanttechy@gmail.com";
-    extraConfig = { init.defaultBranch = "master"; };
+    settings = {
+      user = {
+        name = "cybergaz";
+        email = "kkanttechy@gmail.com";
+      };
+      init.defaultBranch = "master";
+    };
+  };
+
+  # Enable direnv
+  programs = {
+    direnv = {
+      enable = true;
+      enableFishIntegration = true;
+      nix-direnv.enable = true;
+    };
   };
 
   # home manager release version
