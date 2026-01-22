@@ -13,7 +13,7 @@
       # p7zip
       # oh-my-zsh
       # oh-my-posh
-      inputs.zen-browser.packages."${system}".twilight
+      # inputs.zen-browser.packages."${system}".twilight
     ];
 
   # GTK theming

@@ -11,8 +11,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # zen-browser
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    # # zen-browser
+    # zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
 
   outputs = { nixpkgs, home-manager, ... }@inputs: {
