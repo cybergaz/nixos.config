@@ -33,9 +33,9 @@ with pkgs; [
   bat
   eza
   xcp
+  pv
   gcc
   gnumake
-  ripgrep
   wl-clipboard
   cliphist
   iwgtk
