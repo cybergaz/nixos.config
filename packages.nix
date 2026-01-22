@@ -29,7 +29,10 @@ with pkgs; [
   zip
   unzip
   ripunzip
+  ripgrep
   bat
+  eza
+  xcp
   gcc
   gnumake
   ripgrep
@@ -65,7 +68,6 @@ with pkgs; [
   websocat
   # fast-cli
   playerctl
-  swayidle
   ncdu
   nvtopPackages.intel
 
