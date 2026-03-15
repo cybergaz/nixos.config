@@ -1,9 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
-
+{ pkgs, inputs, ... }:
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -25,10 +20,12 @@
   # ------------------------------------------------------------------------
   # Swap and RAM management
   # ------------------------------------------------------------------------
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 16 * 1024; # 16 GB
-  }];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024; # 16 GB
+    }
+  ];
 
   services.fstrim.enable = true;
 
@@ -60,8 +57,12 @@
     # wireless network interfaces.
     wireless.iwd.enable = true;
     wireless.iwd.settings = {
-      IPv6 = { Enabled = true; };
-      Settings = { AutoConnect = true; };
+      IPv6 = {
+        Enabled = true;
+      };
+      Settings = {
+        AutoConnect = true;
+      };
     };
 
     # wired network interface. ( Replace enp0s20f0u5 with your interface name )
@@ -82,6 +83,25 @@
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
+  # ------------------------------------------------------------------------
+  # Mounting extra partitions
+  # ------------------------------------------------------------------------
+  # create a mount point with required permissions
+  systemd.tmpfiles.rules = [
+    "d /mnt/vault 2775 root storage -"
+  ];
+  # mount on boot
+  fileSystems."/mnt/vault" = {
+    device = "/dev/disk/by-label/VAULT";
+    fsType = "ext4";
+    options = [
+      "rw"
+      "relatime"
+    ];
+  };
+  # create a user group to access these mount points
+  users.groups.storage = { };
+
   # Enable sound.
   services.pipewire = {
     enable = true;
@@ -94,31 +114,43 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.gaz = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "wheel"
+      "docker"
+      "storage"
+    ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
   };
 
-  services.displayManager.ly.enable = true;
-  services.displayManager.ly.settings = {
-    # matrix || none
-    animation = "none";
-    # The character used to mask the password
-    asterisk = ".";
-    # Erase password input on failure
-    clear_password = true;
-    # Remove main box borders
-    hide_borders = true;
-    # Main box margins
-    margin_box_h = 2;
-    margin_box_v = 1;
-    # Input boxes length
-    input_len = 34;
+  services.displayManager.ly = {
+    enable = true;
+    settings = {
+      # matrix | none | gameoflife
+      animation = "none";
+      # The character used to mask the password
+      asterisk = "*";
+      # Erase password input on failure
+      clear_password = true;
+      # Remove main box borders
+      hide_borders = true;
+      # Main box margins
+      margin_box_h = 2;
+      margin_box_v = 1;
+      # Input boxes length
+      input_len = 34;
+    };
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = false;
+  };
 
   programs.hyprland.enable = true;
-  programs.niri.enable = true;
+  programs.niri = {
+    enable = true;
+    package = inputs.niri.packages.${pkgs.system}.niri;
+  };
   programs.fish.enable = true;
   programs.command-not-found.enable = true;
   # programs.nix-index.enable = true;
@@ -130,18 +162,11 @@
     # flake = "/home/user/my-nixos-config"; # sets NH_OS_FLAKE variable for you
   };
 
-  # services.xserver = { enable = true; };
-  # programs.xwayland.enable = true;
-  # services.xserver.displayManager.startx.enable = true;
-  programs.steam = { enable = true; };
-  # programs.gamemode.enable = true;
-  # nixpkgs.config.allowUnfreePredicate = pkg:
-  #   builtins.elem (lib.getName pkg) [ "steam" "steam-unwrapped" ];
+  programs.steam.enable = true;
+  programs.gamemode.enable = true;
 
   # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
-  environment.systemPackages = with pkgs;
-    import ./packages.nix { inherit pkgs; };
+  environment.systemPackages = with pkgs; import ./packages.nix { inherit pkgs; };
 
   environment.localBinInPath = true;
   environment.variables = {
@@ -150,8 +175,8 @@
     TERMINAL = "alacritty";
     FILE_MANAGER = "nemo";
     OZONE_WL = "1"; # Enable ozone wayland support for chromium
-    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-    PATH = "$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.bun/bin";
+    # PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+    PATH = "$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.bun/bin:$HOME/go/bin";
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -162,16 +187,6 @@
     nerd-fonts.noto
     noto-fonts
   ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
@@ -213,6 +228,7 @@
     };
   };
 
+  # lid switch and power key behavior
   services.logind = {
     settings = {
       Login = {
@@ -238,8 +254,10 @@
   };
 
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "26.01";
+  system.stateVersion = "25.11";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }

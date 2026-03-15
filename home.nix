@@ -1,20 +1,22 @@
-{ config, pkgs, system, inputs, ... }:
-
+{ pkgs, ... }:
 {
   home.username = "gaz";
   home.homeDirectory = "/home/gaz";
 
   # Packages that should be installed to the user profile.
-  home.packages = with pkgs;
-    [
-      # zip
-      # xz
-      # unzip
-      # p7zip
-      # oh-my-zsh
-      # oh-my-posh
-      # inputs.zen-browser.packages."${system}".twilight
-    ];
+  home.packages = with pkgs; [
+    # zip
+    # xz
+    # unzip
+    # p7zip
+    # oh-my-zsh
+    # oh-my-posh
+    # inputs.zen-browser.packages."${system}".twilight
+    lyra-cursors
+    bibata-cursors
+    layan-gtk-theme
+    kora-icon-theme
+  ];
 
   # GTK theming
   gtk = {
@@ -27,9 +29,11 @@
       name = "kora";
       package = pkgs.kora-icon-theme;
     };
-    cursorTheme = {
-      name = "LyraB-cursors";
-      package = pkgs.lyra-cursors;
+    cursorTheme = { # apparently this doesn't work, you have to set it in WM's config
+      # name = "LyraB-cursors";
+      # package = pkgs.lyra-cursors;
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
       size = 24;
     };
   };
@@ -49,29 +53,34 @@
     };
   };
 
-  # basic configuration of git, please change to your own
-  programs.git = {
-    enable = true;
-    settings = {
-      user = {
-        name = "cybergaz";
-        email = "kkanttechy@gmail.com";
-      };
-      init.defaultBranch = "master";
-    };
-  };
-
-  # Enable direnv
   programs = {
+
+    # basic configuration of git, please change to your own
+    git = {
+      enable = true;
+      settings = {
+        user = {
+          name = "cybergaz";
+          email = "kkanttechy@gmail.com";
+        };
+        init.defaultBranch = "master";
+      };
+    };
+
+    # direnv
     direnv = {
       enable = true;
       enableFishIntegration = true;
       nix-direnv.enable = true;
     };
+
+    # obs-studio
+    obs-studio.enable = true;
+
   };
 
   # home manager release version
-  home.stateVersion = "23.11";
+  home.stateVersion = "25.11";
 
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;

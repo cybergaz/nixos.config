@@ -1,26 +1,38 @@
 { pkgs, ... }:
 
-with pkgs; [
+with pkgs;
+[
   git
   wget
   jq
   fd
   killall
   tmux
+
   neovim
+  # tree-sitter
+
+  openssl
+  websocat
+  whois
+  dig
+  pv
+  pstree
+  tmate
 
   alacritty
   waybar
   swayidle
   libnotify
+  libgcc
   mako
   ly
   firefox-bin
+  google-chrome
   wofi
   btop
   lazygit
   rustup
-  libgcc
   zig
   bun
   nodejs
@@ -33,7 +45,6 @@ with pkgs; [
   bat
   eza
   xcp
-  pv
   gcc
   gnumake
   wl-clipboard
@@ -44,10 +55,6 @@ with pkgs; [
   hyprlock
   hyprpicker
   xwayland-satellite
-  google-chrome
-  lyra-cursors
-  layan-gtk-theme
-  kora-icon-theme
   grim
   slurp
   cloudflare-warp
@@ -60,14 +67,12 @@ with pkgs; [
   gnome.gvfs
   aria2
   usbutils
-  tmate
-  openssl
   pkg-config
   mold
   clang
-  websocat
   # fast-cli
   playerctl
+  ffmpeg
   ncdu
   nvtopPackages.intel
 
@@ -78,7 +83,6 @@ with pkgs; [
   telegram-desktop
   discord
   postman
-  obs-studio
   obsidian
   pavucontrol
   spotify
