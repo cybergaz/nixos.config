@@ -3,14 +3,14 @@
 
   inputs = {
     # nixpkgs unstable
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # nix-index-database.url = "github:nix-community/nix-index-database";
     # nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     # add home-manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,6 +21,11 @@
       url = "github:niri-wm/niri/wip/branch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -28,6 +33,7 @@
       nixpkgs,
       home-manager,
       niri,
+      rust-overlay,
       # nix-index-database,
       ...
     }@inputs:
@@ -46,6 +52,16 @@
             # bring in nix-index-database as a NixOS module
             # nix-index-database.nixosModules.default
             # { programs.nix-index-database.comma.enable = true; }
+            (
+              { pkgs, ... }:
+              {
+                nixpkgs.overlays = [ rust-overlay.overlays.default ];
+                environment.systemPackages = [
+                  pkgs.rust-bin.stable.latest.default
+                  pkgs.rust-analyzer
+                ];
+              }
+            )
 
             # bring in home-manager as a NixOS module
             home-manager.nixosModules.home-manager
