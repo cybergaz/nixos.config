@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -69,22 +73,22 @@
     # interfaces.enp0s20f0u5.useDHCP = true;
   };
 
-  # Set your time zone.
-  time.hardwareClockInLocalTime = false;
-  time.timeZone = "Asia/Kolkata";
-  services.timesyncd.enable = true;
-  # services.ntp.enable = true;
-
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   networking.firewall.enable = false;
 
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  # ------------------------------------------------------------------------
+  # Time
+  # ------------------------------------------------------------------------
+  time.timeZone = "Asia/Kolkata";
+  time.hardwareClockInLocalTime = false;
+  services.timesyncd.enable = false;
+  services.chrony.enable = true;
+  # services.ntp.enable = true;
 
   # ------------------------------------------------------------------------
-  # Mounting extra partitions
+  # extra partitions mount config
   # ------------------------------------------------------------------------
   # create a mount point with required permissions
   systemd.tmpfiles.rules = [
@@ -149,7 +153,7 @@
   programs.hyprland.enable = true;
   programs.niri = {
     enable = true;
-    package = inputs.niri.packages.${pkgs.system}.niri;
+    package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri;
   };
   programs.fish.enable = true;
   programs.command-not-found.enable = true;
@@ -252,6 +256,9 @@
       Restart = "always";
     };
   };
+
+  # Enable CUPS to print documents.
+  # services.printing.enable = true;
 
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.11";
