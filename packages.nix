@@ -32,7 +32,7 @@ with pkgs;
   wofi
   btop
   lazygit
-  rustup
+  # rustup
   zig
   bun
   nodejs
@@ -60,7 +60,7 @@ with pkgs;
   cloudflare-warp
   zoxide
   mpv
-  neofetch
+  fastfetch
   swww
   viewnior
   dust
@@ -80,6 +80,9 @@ with pkgs;
   postgresql
   go
   code-cursor
+  nil
+  nixfmt
+
   telegram-desktop
   discord
   postman
