@@ -26,6 +26,12 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    fff-nvim = {
+      url = "github:dmtrKovalenko/fff.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -34,6 +40,7 @@
       home-manager,
       niri,
       rust-overlay,
+      fff-nvim,
       # nix-index-database,
       ...
     }@inputs:
@@ -62,6 +69,14 @@
                 ];
               }
             )
+            (
+              { pkgs, ... }:
+              {
+                environment.systemPackages = [
+                  fff-nvim.packages.x86_64-linux.default
+                ];
+              }
+            )
 
             # bring in home-manager as a NixOS module
             home-manager.nixosModules.home-manager
@@ -71,6 +86,7 @@
               home-manager.backupFileExtension = "HMBackup";
               home-manager.extraSpecialArgs = {
                 inherit inputs;
+                fff-nvim = inputs.fff-nvim; # or alternatively ""inherit (inputs) fff-nvim;""
               };
 
               home-manager.users.gaz.imports = [ ./home.nix ];

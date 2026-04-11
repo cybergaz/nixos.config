@@ -67,6 +67,9 @@
       Settings = {
         AutoConnect = true;
       };
+      General = {
+        EnableNetworkConfiguration = true;
+      };
     };
 
     # wired network interface. ( Replace enp0s20f0u5 with your interface name )
@@ -83,9 +86,8 @@
   # ------------------------------------------------------------------------
   time.timeZone = "Asia/Kolkata";
   time.hardwareClockInLocalTime = false;
-  services.timesyncd.enable = false;
-  services.chrony.enable = true;
-  # services.ntp.enable = true;
+  services.timesyncd.enable = true;
+  # services.chrony.enable = true;
 
   # ------------------------------------------------------------------------
   # extra partitions mount config

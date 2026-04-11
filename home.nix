@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, fff-nvim, ... }:
 {
   home.username = "gaz";
   home.homeDirectory = "/home/gaz";
@@ -29,7 +29,8 @@
       name = "kora";
       package = pkgs.kora-icon-theme;
     };
-    cursorTheme = { # apparently this doesn't work, you have to set it in WM's config
+    cursorTheme = {
+      # apparently this doesn't work, you have to set it in WM's config
       # name = "LyraB-cursors";
       # package = pkgs.lyra-cursors;
       name = "Bibata-Modern-Ice";
@@ -76,6 +77,13 @@
 
     # obs-studio
     obs-studio.enable = true;
+
+    neovim = {
+      enable = true;
+      plugins = [
+        fff-nvim.packages.x86_64-linux.fff-nvim
+      ];
+    };
 
   };
 

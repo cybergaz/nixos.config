@@ -9,7 +9,7 @@ with pkgs;
   killall
   tmux
 
-  neovim
+  # neovim
   # tree-sitter
 
   openssl
@@ -36,6 +36,7 @@ with pkgs;
   zig
   bun
   nodejs
+  python315
   fzf
   unrar
   zip
@@ -61,6 +62,7 @@ with pkgs;
   zoxide
   mpv
   fastfetch
+  onefetch
   swww
   viewnior
   dust
@@ -75,6 +77,7 @@ with pkgs;
   ffmpeg
   ncdu
   nvtopPackages.intel
+  # caligula # for usb flashing
 
   awscli2
   postgresql
@@ -89,4 +92,8 @@ with pkgs;
   obsidian
   pavucontrol
   spotify
+
+  wiremix
+  impala
+  bluetui
 ]
