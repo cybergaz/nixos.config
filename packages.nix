@@ -8,11 +8,13 @@ with pkgs;
   fd
   killall
   tmux
+  reptyr
 
   # neovim
-  # tree-sitter
+  tree-sitter
 
   openssl
+  socat
   websocat
   whois
   dig
@@ -23,9 +25,12 @@ with pkgs;
   alacritty
   waybar
   swayidle
+  stasis
   libnotify
   libgcc
+  libva-utils
   mako
+  # dunst
   ly
   firefox-bin
   google-chrome
@@ -52,6 +57,7 @@ with pkgs;
   cliphist
   iwgtk
   nemo
+  # nautilus
   brightnessctl
   hyprlock
   hyprpicker
@@ -63,10 +69,9 @@ with pkgs;
   mpv
   fastfetch
   onefetch
-  swww
+  awww
   viewnior
   dust
-  gnome.gvfs
   aria2
   usbutils
   pkg-config
@@ -88,12 +93,24 @@ with pkgs;
 
   telegram-desktop
   discord
-  postman
+  # postman
   obsidian
   pavucontrol
   spotify
+  tigervnc
 
   wiremix
   impala
   bluetui
+
+  # android mtp related stuff
+  # ------------------------------------------------------------------------------------
+  android-tools
+  android-file-transfer # provides aft-mtp-mount
+  # jmtpfs
+  # gnome.gvfs
+  libmtp # provides mtp-detect
+  # ------------------------------------------------------------------------------------
+
+  yt-dlp
 ]

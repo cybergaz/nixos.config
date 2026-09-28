@@ -7,6 +7,10 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # nix-index-database.url = "github:nix-community/nix-index-database";
     # nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    flake-programs-sqlite = {
+      url = "github:wamserma/flake-programs-sqlite";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # add home-manager
     home-manager = {
@@ -18,7 +22,7 @@
     # zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     niri = {
-      url = "github:niri-wm/niri/wip/branch";
+      url = "github:niri-wm/niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -27,8 +31,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    fff-nvim = {
-      url = "github:dmtrKovalenko/fff.nvim";
+    # EgisTec EH57E fingerprint reader (patched libfprint + fprintd), see ~/workspace/fingerprint
+    # fingerprint = {
+    #   url = "path:/home/gaz/workspace/fingerprint";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
+    # fff-nvim = {
+    #   url = "github:dmtrKovalenko/fff.nvim";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
+    hyprscape = {
+      url = "github:cybergaz/hyprscape";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -37,11 +52,13 @@
   outputs =
     {
       nixpkgs,
+      flake-programs-sqlite,
       home-manager,
       niri,
       rust-overlay,
-      fff-nvim,
+      # fff-nvim,
       # nix-index-database,
+      hyprscape,
       ...
     }@inputs:
     {
@@ -59,6 +76,20 @@
             # bring in nix-index-database as a NixOS module
             # nix-index-database.nixosModules.default
             # { programs.nix-index-database.comma.enable = true; }
+            flake-programs-sqlite.nixosModules.programs-sqlite
+            { programs.command-not-found.enable = true; }
+
+            # fingerprint reader: fprintd with the EH57E driver
+            # inputs.fingerprint.nixosModules.default
+            # {
+            #   hardware.fingerprint.eh57e.enable = true;
+            #   hardware.fingerprint.eh57e = {
+            #     matchThreshold = "0.35";
+            #     maxFailures = 15; # consecutive failed scans before lockout
+            #     lockoutSeconds = 1; # how long fingerprint stays disabled
+            #   };
+            # }
+
             (
               { pkgs, ... }:
               {
@@ -69,14 +100,14 @@
                 ];
               }
             )
-            (
-              { pkgs, ... }:
-              {
-                environment.systemPackages = [
-                  fff-nvim.packages.x86_64-linux.default
-                ];
-              }
-            )
+            # (
+            #   { pkgs, ... }:
+            #   {
+            #     environment.systemPackages = [
+            #       fff-nvim.packages.x86_64-linux.default
+            #     ];
+            #   }
+            # )
 
             # bring in home-manager as a NixOS module
             home-manager.nixosModules.home-manager
@@ -86,7 +117,7 @@
               home-manager.backupFileExtension = "HMBackup";
               home-manager.extraSpecialArgs = {
                 inherit inputs;
-                fff-nvim = inputs.fff-nvim; # or alternatively ""inherit (inputs) fff-nvim;""
+                # fff-nvim = inputs.fff-nvim; # or alternatively ""inherit (inputs) fff-nvim;""
               };
 
               home-manager.users.gaz.imports = [ ./home.nix ];

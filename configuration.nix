@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   inputs,
   ...
@@ -18,6 +19,8 @@
       mesa
       # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
       # intel-media-sdk   # for older GPUs
+      intel-media-driver # Intel Broadwell/Skylake and newer (iHD driver)
+      # vaapiVdpau         # uncomment if it's actually an AMD GPU (Mesa radeonsi)
     ];
   };
 
@@ -88,6 +91,19 @@
   time.hardwareClockInLocalTime = false;
   services.timesyncd.enable = true;
   # services.chrony.enable = true;
+  systemd.services.fix-rtc = {
+    description = "Fix RTC after dead backup";
+    wantedBy = [ "multi-user.target" ];
+    after = [
+      "network-online.target"
+      "systemd-timesyncd.service"
+    ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/run/current-system/sw/bin/hwclock --systohc";
+    };
+  };
 
   # ------------------------------------------------------------------------
   # extra partitions mount config
@@ -124,9 +140,16 @@
       "wheel"
       "docker"
       "storage"
+      "input"
     ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
   };
+
+  # ------------------------------------------------------------------------------------
+  # android mtp related stuff
+  # Optional: lets Nautilus/Thunar/Dolphin see the phone automatically
+  services.gvfs.enable = true;
+  # ------------------------------------------------------------------------------------
 
   services.displayManager.ly = {
     enable = true;
@@ -152,7 +175,9 @@
     enableOnBoot = false;
   };
 
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+  };
   programs.niri = {
     enable = true;
     package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri;
@@ -172,7 +197,13 @@
   programs.gamemode.enable = true;
 
   # List packages installed in system profile.
-  environment.systemPackages = with pkgs; import ./packages.nix { inherit pkgs; };
+  # environment.systemPackages = import ./packages.nix { inherit pkgs; };
+  environment.systemPackages = import ./packages.nix { inherit pkgs; } ++ [
+    (inputs.hyprscape.lib.mkHyprscape {
+      inherit pkgs;
+      hyprland = config.programs.hyprland.package;
+    })
+  ];
 
   environment.localBinInPath = true;
   environment.variables = {
@@ -258,6 +289,20 @@
       Restart = "always";
     };
   };
+
+  # PAM. Enabling fprintd (hardware.fingerprint.eh57e, ~/workspace/fingerprint) defaults
+  # pam_fprintd into every PAM service. Keep it for sudo/polkit, but out of the lock screens,
+  # which drive fprintd over D-Bus themselves (a blocking fingerprint prompt inside
+  # pam_authenticate would freeze the password field), and out of the ly/tty login.
+  # security.pam.services = {
+  #   wisplock.fprintAuth = false;
+  #   hyprlock.fprintAuth = true;
+  #   ly.fprintAuth = false;
+  #   login.fprintAuth = true;
+  #   # TODO re-enable once the EH57E driver is validated; a 30 s finger wait on every
+  #   # sudo gets in the way while debugging it.
+  #   sudo.fprintAuth = true;
+  # };
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
