@@ -131,6 +131,8 @@
       enable = true;
       enableFishIntegration = true;
       nix-direnv.enable = true;
+      # stops auto-rebuilding dev shells
+      stdlib = "nix_direnv_manual_reload";
     };
 
     # obs-studio
